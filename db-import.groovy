@@ -5,7 +5,7 @@ import java.sql.ResultSetMetaData
     数据表导入工具，能将线上的数据导入到测试环境
     支持级联，即能导入以表A中的字段为外键的表
     
-    @author ls5231#gmail.com
+    @autor ls5231#gmail.com
 **/
 
 
@@ -37,7 +37,6 @@ testurl = "jdbc:mysql://127.0.0.1:3306/hello"
 //source db url
 onlineurl = "jdbc:mysql://127.0.0.1:3307/hello"
 
-
 onlineQueryer = new DBQueryer(onlineurl, driver)
 testQueryer = new DBQueryer(testurl, driver)
 
@@ -63,10 +62,10 @@ class Table {
     private table;
     private cleanSQLFunc;
     private selectSQLFunc;
-    private insertFunc;
+    private insertPreProcessFunc;
    
     //默认的insert_func
-    private static DEFAULT_INSERT_FUNC = { onlineRowMap, testCasecadeRowMap -> return onlineRowMap;}
+    private static DEFAULT_INSERT_PRE_PROCESS_FUNC = { onlineRowMap, testCasecadeRowMap -> return onlineRowMap;}
     
     //
     private onlineCascadeRowMap;
@@ -78,7 +77,7 @@ class Table {
     private cascadeSons = [];
     
     Table(onlineQueryer, onlineCascadeRowMap, testQueryer,testCascadeRowMap, table,
-     cleanSQLFunc, selectSQLFunc, insertFunc) {
+     cleanSQLFunc, selectSQLFunc, insertPreProcessFunc) {
         this.onlineQueryer = onlineQueryer;
         this.onlineCascadeRowMap = onlineCascadeRowMap;
         this.testQueryer = testQueryer;
@@ -86,7 +85,7 @@ class Table {
         this.table = table;
         this.cleanSQLFunc = cleanSQLFunc;
         this.selectSQLFunc = selectSQLFunc;
-        this.insertFunc = insertFunc;
+        this.insertPreProcessFunc = insertPreProcessFunc;
     }
     
     //将ResultSet转为Map
@@ -167,7 +166,11 @@ class Table {
                     param_tpl = param_tpl.append("?," * (keys.size()));
                     param_tpl.deleteCharAt(param_tpl.length() -1);
                     param_tpl.append(" )");
+                    
+                    
+                    println "插入sql: " + sql_tpl.toString();
                 }
+                
                 
                 if (insert_sql == null ) {
                     insert_sql = new StringBuilder(sql_tpl);
@@ -179,7 +182,7 @@ class Table {
                     def value = row.getObject(i);
                     key_value.put(keys.get(i-1), value);
                 }
-                key_value = insertFunc(key_value, testCascadeRowMap);
+                key_value = insertPreProcessFunc(key_value, testCascadeRowMap);
                 keys.each{
                     values.add(key_value.get(it));
                 };
@@ -220,8 +223,8 @@ class Table {
     /**
     *** 添加级联导入的表
     **/
-    def addCascadeTable(table, cleanSQLFunc, selectSQLFunc) {
-        Table t = new Table(onlineQueryer, null, testQueryer, null, table, cleanSQLFunc, selectSQLFunc, DEFAULT_INSERT_FUNC);
+    def addCascadeTable(table, cleanSQLFunc=null, selectSQLFunc=null, insertPreProcessFunc=DEFAULT_INSERT_PRE_PROCESS_FUNC) {
+        Table t = new Table(onlineQueryer, null, testQueryer, null, table, cleanSQLFunc, selectSQLFunc, insertPreProcessFunc);
         this.cascadeSons.add(t);
         return t;
     }
@@ -230,6 +233,12 @@ class Table {
         return table + "";
     }
 }
+
+/*********************
+测试
+************************/
+
+
 //要导的表
 statBookSell = new Table(onlineQueryer, ["UserId" : onlineUserId], testQueryer, ["UserId" : testUserId],
     'StatBookSell',
@@ -251,7 +260,7 @@ bookSource = new Table(onlineQueryer, ["UserId" : onlineUserId], testQueryer, ["
     }
 );
 
-//添加级联更新的表
+//添加级联导入的表
 bookSource.addCascadeTable("BookArticle", 
     {table, rowMap -> return ["delete from " + table + " where SourceUuid = ? " , [rowMap.SourceUuid]]},
     {table, rowMap -> return ["select * from " + table + " where SourceUuid = ?" , [rowMap.SourceUuid]]}
@@ -259,7 +268,7 @@ bookSource.addCascadeTable("BookArticle",
 
 tables = [statBookSell, bookSource];
 
-//要导的表
+
 println "要导的表:" + tables;
 
 //开始
