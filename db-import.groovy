@@ -31,29 +31,6 @@ class DBQueryer {
     }
 }
 
-driver = "com.mysql.jdbc.Driver"
-//dest db url
-testurl = "jdbc:mysql://127.0.0.1:3306/hello"
-//source db url
-onlineurl = "jdbc:mysql://127.0.0.1:3307/hello"
-
-onlineQueryer = new DBQueryer(onlineurl, driver)
-testQueryer = new DBQueryer(testurl, driver)
-
-//将线上用户的数据导入到测试环境里某个用户下面
-onlineAccount = 'yuxiao1a@163.com';
-testAccount = 'justaid@163.com';
-
-onlineUserId = null;
-testUserId = null;
-
-//拿到各自对应的UserId
-onlineQueryer.execute('select UserId from Account where UserName = ?', [onlineAccount], {t -> onlineUserId = t.UserId});
-testQueryer.execute('select UserId from Account where UserName = ?', [testAccount], {t -> testUserId = t.UserId});
-
-println '线上用户id: ' + onlineUserId
-println '测试用户id: ' + testUserId
-
 class Table {
     private onlineQueryer;
     private onlineCascadeKey;
@@ -238,6 +215,28 @@ class Table {
 测试
 ************************/
 
+driver = "com.mysql.jdbc.Driver"
+//dest db url
+testurl = "jdbc:mysql://127.0.0.1:3306/hello"
+//source db url
+onlineurl = "jdbc:mysql://127.0.0.1:3307/hello"
+
+onlineQueryer = new DBQueryer(onlineurl, driver)
+testQueryer = new DBQueryer(testurl, driver)
+
+//将线上用户的数据导入到测试环境里某个用户下面
+onlineAccount = 'yuxiao1a@163.com';
+testAccount = 'justaid@163.com';
+
+onlineUserId = null;
+testUserId = null;
+
+//拿到各自对应的UserId
+onlineQueryer.execute('select UserId from Account where UserName = ?', [onlineAccount], {t -> onlineUserId = t.UserId});
+testQueryer.execute('select UserId from Account where UserName = ?', [testAccount], {t -> testUserId = t.UserId});
+
+println '线上用户id: ' + onlineUserId
+println '测试用户id: ' + testUserId
 
 //要导的表
 statBookSell = new Table(onlineQueryer, ["UserId" : onlineUserId], testQueryer, ["UserId" : testUserId],
