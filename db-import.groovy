@@ -191,7 +191,7 @@ class Table {
         }
         
         def end = System.nanoTime();
-        println "导入成功..., 耗时: " + (end - start) /1000000 + "毫秒\n\n";
+        println "导入成功..., 耗时: " + (end - start) /1000000 + "毫秒\n\r\n\r";
         
         //级联更新
         this.cascadeSons.each{
