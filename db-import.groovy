@@ -33,9 +33,9 @@ class DBQueryer {
 
 class Table {
     private onlineQueryer;
-    private onlineCascadeKey;
+    private onlineCascadeRowMap;
     private testQueryer;
-    private testCascadeKey;
+    private testCascadeRowMap;
     private table;
     private cleanSQLFunc;
     private selectSQLFunc;
