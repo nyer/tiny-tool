@@ -1,4 +1,3 @@
-
 import groovy.sql.Sql
 import java.sql.ResultSetMetaData
 
@@ -193,6 +192,7 @@ class Table {
         
         def end = System.nanoTime();
         println "导入成功..., 耗时: " + (end - start) /1000000 + "毫秒\n\n";
+        
         //级联更新
         this.cascadeSons.each{
             def t = it;
