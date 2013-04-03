@@ -5,7 +5,7 @@ import java.sql.ResultSetMetaData
     数据表导入工具，能将线上的数据导入到测试环境
     支持级联，即能导入以表A中的字段为外键的表
     
-    @autor ls5231#gmail.com
+    @author ls5231#gmail.com
 **/
 
 
@@ -32,7 +32,9 @@ class DBQueryer {
 }
 
 driver = "com.mysql.jdbc.Driver"
+//dest db url
 testurl = "jdbc:mysql://127.0.0.1:3306/hello"
+//source db url
 onlineurl = "jdbc:mysql://127.0.0.1:3307/hello"
 
 
@@ -191,10 +193,9 @@ class Table {
         }
         
         def end = System.nanoTime();
-        println "导入成功..., 耗时: " + (end - start) /1000000 + "毫秒\n\n";
         
         //级联更新
-        cascadeSons.each{
+        this.cascadeSons.each{
             def t = it;
             println "级联更新: " + it.table
             rowMaps.each{
