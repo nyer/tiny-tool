@@ -194,7 +194,8 @@ class Table {
         
         def end = System.nanoTime();
         
-        def timeConsuming = ((end - start) / 1000000);
+        def timeConsumed = (end - start);
+        println "导入成功..., 耗时: ${timeConsumed / 1000000} 毫秒\n\n";
         
         //级联更新
         this.cascadeSons.each{
