@@ -5,7 +5,7 @@
  */
 public class CommonPrefixSuffix {
     /**
-     * return the end location of max common prefix.
+     * return the length of max common prefix.
      * @param text1
      * @param text2
      */
