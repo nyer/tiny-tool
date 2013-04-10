@@ -1,5 +1,5 @@
 /**
- * get max common suffix and prefix through binary-search.
+ * get max common suffix and prefix of two strings through binary-search.
  * @author ls5231#gmail.com
  *
  */
@@ -62,7 +62,7 @@ public class CommonPrefixSuffix {
     
 
     /**
-     * return the start location of max common suffix.
+     * return the length of max common suffix.
      * @param text1
      * @param text2
      */
