@@ -1,5 +1,7 @@
+package diff;
+
 /**
- * get max common suffix and prefix of two strings through binary-search.
+ * get max common suffix and prefix through binary-search.
  * @author ls5231#gmail.com
  *
  */
@@ -19,7 +21,7 @@ public class CommonPrefixSuffix {
         int max = Math.min(text1.length(), text2.length());
         int mid = max;
         
-        while (min != max && min != mid) {
+        while (min < mid) {
             if (text1.regionMatches(min, text2, min, mid - min)) {
                 min = mid;
             } else {
@@ -62,7 +64,7 @@ public class CommonPrefixSuffix {
     
 
     /**
-     * return the length of max common suffix.
+     * return the start location of max common suffix.
      * @param text1
      * @param text2
      */
@@ -78,7 +80,7 @@ public class CommonPrefixSuffix {
         
         int t1l = text1.length();
         int t2l = text2.length();
-        while (max != min && max != mid) {
+        while (max > mid) {
             if (text1.regionMatches(t1l + mid, text2, t2l + mid, max - mid + 1)) {
                 max = mid;
             } else {
@@ -121,8 +123,9 @@ public class CommonPrefixSuffix {
       }  
     
     public static void main(String[] args) {
-        String text1 = "1s243231";
-        String text2 = "1243231";
+        String text1 = "124b3231";
+        String text2 = "124a3231";
+        System.out.println(commonPrefix(text1, text2) );
         System.out.println(commonPrefix(text1, text2) == diff_commonPrefix(text1, text2));
         System.out.println(commonSuffix(text1, text2) == diff_commonSuffix(text1, text2));
     }
