@@ -63,12 +63,10 @@ public class VariableByteCode {
 
     public static long decode(byte[] b) {
         long v = 0;
-        int m = 0;
-        for (int i = b.length - 1;i >= 0; i --) {
+        for (int i = 0, s = b.length;i < s; i ++){
+            v = v << 7;
             b[i] = (byte)(b[i] & LAST_SEVEN_BIT);
-            long c = ((long)b[i]) << (m * 7);
-            v = v | c;
-            m ++;
+            v = v | b[i];
         }
 
         return v;
